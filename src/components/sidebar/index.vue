@@ -11,27 +11,59 @@
     <n-menu
       :collapsed-width="64"
       :collapsed-icon-size="20"
-      :options="appRoute"
+      :options="siders"
       @update:value="handleMenuUpdateValue"
     />
   </n-layout-sider>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed, reactive, unref } from "vue";
 import { useMessage } from "naive-ui";
 import type { MenuOption } from "naive-ui";
-import { useRouter } from "vue-router";
-import useMenuTree from "@/hooks/menu-tree";
+import { useRoute, useRouter } from "vue-router";
+import { useMenuStore } from "@/store";
+import { generatorMenu } from "@/utils/menu";
 
 export default defineComponent({
   components: {},
-  mounted() {},
+  mounted() {
+    this.updateMenu();
+  },
   setup() {
+    // 当前路由
+    const currentRoute = useRoute();
     const collapsed = ref<boolean>(false);
     const message = useMessage();
-    const { appRoute } = useMenuTree();
     const router = useRouter();
+    const menuStore = useMenuStore();
+    const siders = ref<any[]>([]);
+    const selectedKeys = ref<string>(currentRoute.name as string);
+
+    // 获取当前打开的子菜单
+    const matched = currentRoute.matched;
+
+    const getOpenKeys =
+      matched && matched.length ? matched.map((item) => item.name) : [];
+
+    const state = reactive({
+      openKeys: getOpenKeys,
+    });
+
+    const updateMenu = () => {
+      siders.value = generatorMenu(menuStore.getSiders);
+      updateSelectedKeys();
+    };
+
+    const updateSelectedKeys = () => {
+      const matched = currentRoute.matched;
+      state.openKeys = matched.map((item) => item.name);
+      const activeMenu: string =
+        (currentRoute.meta?.activeMenu as string) || "";
+      selectedKeys.value = activeMenu
+        ? (activeMenu as string)
+        : (currentRoute.name as string);
+    };
 
     const handleMenuUpdateValue = (key: string, item: MenuOption) => {
       router.push({
@@ -43,7 +75,8 @@ export default defineComponent({
     return {
       collapsed,
       message,
-      appRoute,
+      siders,
+      updateMenu,
       handleMenuUpdateValue,
     };
   },

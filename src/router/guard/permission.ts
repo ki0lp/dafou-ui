@@ -46,14 +46,13 @@ export default function setupPermissionGuard(router: Router) {
     }
 
     // 判断是否已经初始化过动态路由，如果初始化过，直接跳转
-    if (menuStore.isDynamicAddedRoute) {
+    if (menuStore.getIsDynamicAddedRoute) {
       next();
       return;
     }
 
     await userStore.info();
     const routes = await menuStore.generateRoutes();
-    console.log(routes);
 
     // 动态添加可访问路由表
     routes.forEach((item) => {

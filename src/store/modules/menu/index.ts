@@ -25,8 +25,11 @@ const useMenuStore = defineStore("menu", {
   }),
 
   getters: {
-    hasRole(state: MenuState): boolean {
+    getIsDynamicAddedRoute(state: MenuState): boolean {
       return state.isDynamicAddedRoute;
+    },
+    getSiders(state: MenuState): RouteRecordRaw[] {
+      return state.siders;
     },
   },
 
@@ -40,17 +43,17 @@ const useMenuStore = defineStore("menu", {
     },
     /**
      * 设置动态路由
-     * @param routers
+     * @param routes
      */
-    setRoutes(routers) {
-      this.addRoutes = routers;
-      this.routes = constantRoutes.concat(routers);
+    setRoutes(routes: RouteRecordRaw[]) {
+      this.addRoutes = routes;
+      this.routes = constantRoutes.concat(routes);
     },
     /**
      * 设置侧边菜单
      * @param siders
      */
-    setSiders(siders) {
+    setSiders(siders: RouteRecordRaw[]) {
       // 设置动态路由
       this.siders = siders;
     },
@@ -66,7 +69,6 @@ const useMenuStore = defineStore("menu", {
       } catch (error) {
         console.log(error);
       }
-      // accessedRoutes = accessedRoutes.filter(routeFilter);
       this.setRoutes(accessedRoutes);
       this.setSiders(accessedRoutes);
       return toRaw(accessedRoutes);

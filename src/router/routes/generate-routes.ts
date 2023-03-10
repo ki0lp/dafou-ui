@@ -1,7 +1,11 @@
+import { h, computed } from "vue";
 import { RouteRecordRaw } from "vue-router";
 import { DEFAULT_LAYOUT, PAGE_LAYOUT } from "@/router/routes/constant";
 import type { AppRouteRecordRaw } from "@/router/routes/types";
 import { getRouters } from "@/api/user";
+// 图标
+import * as $Icons from "@vicons/antd";
+import { renderIcon } from "@/utils/icon";
 
 /**
  * 格式化 后端 结构信息并递归生成层级路由表
@@ -9,8 +13,11 @@ import { getRouters } from "@/api/user";
  * @param parent
  * @returns {*}
  */
+// @ts-ignore
 export const routeGenerator = (routerMap, parent?): any[] => {
+  // @ts-ignore
   return routerMap.map((item) => {
+    console.log(item);
     const currentRouter: any = {
       // 路由地址 动态拼接生成如 /dashboard/workplace
       path: `${(parent && parent.path) || ""}/${item.path}`,
@@ -21,12 +28,19 @@ export const routeGenerator = (routerMap, parent?): any[] => {
       // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
       meta: {
         ...item.meta,
+        // @ts-ignore
+        icon: item.meta.icon ? renderIcon($Icons[item.meta.icon]) : null,
         permissions: item.meta.permissions || null,
       },
     };
 
     // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
     currentRouter.path = currentRouter.path.replace("//", "/");
+
+    // 如果icon是null，删除icon
+    if (!currentRouter.meta.icon) {
+      delete currentRouter.meta.icon;
+    }
     // 重定向
     item.redirect && (currentRouter.redirect = item.redirect);
     // 是否有子菜单，并递归处理
