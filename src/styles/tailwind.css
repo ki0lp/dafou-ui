@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*解决冲突ul库跟css*/
+@layer base {
+    button, [type='button'], [type='reset'], [type='submit'] {
+        background-color: var(--n-color);
+    }
+}

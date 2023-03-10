@@ -1,0 +1,32 @@
+/* 媒体视图 */
+/* ipad pro */
+@media screen and (max-width: 1024px) {
+  .navbar-container {
+    grid-template-columns: auto 1fr auto;
+    padding: 0 16px;
+  }
+  .navbar-container .logo-container .logo-content {
+    display: none;
+  }
+  .navbar-container .menu-container .menu-action {
+    display: none;
+  }
+  .navbar-container .menu-container .menu-search {
+    max-width: inherit;
+  }
+  .navbar-container .right-container .right-action {
+    display: none !important;
+  }
+  .navbar-container .right-container .dropdown-action {
+    display: flex;
+    margin-left: 16px;
+  }
+  .sider-container {
+    display: none;
+  }
+}
+/* ipad */
+/* iphone6 7 8 plus */
+/* iphoneX */
+/* iphone6 7 8 */
+/* iphone5 */
